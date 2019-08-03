@@ -32,8 +32,6 @@ class MainActivityTest {
 
         onView(withId(R.id.fab)).perform(click())
         closeKeyboard()
-        onView(withId(R.id.categoryEditText)).perform(typeText("test category"))
-        closeKeyboard()
         onView(withId(R.id.titleEditText)).perform(typeText("test title"))
         closeKeyboard()
         onView(withId(R.id.descEditText)).perform(typeText("test desc"))
@@ -41,7 +39,6 @@ class MainActivityTest {
         onView(withId(R.id.confirmButton)).perform(click())
 
         onView(withText("test title")).check(matches(isDisplayed()))
-        onView(withText("test category")).check(matches(isDisplayed()))
     }
 
     @Test
@@ -50,8 +47,6 @@ class MainActivityTest {
         onView(withText("Clear")).perform(click())
 
         onView(withId(R.id.fab)).perform(click())
-        closeKeyboard()
-        onView(withId(R.id.categoryEditText)).perform(typeText("test category"))
         closeKeyboard()
         onView(withId(R.id.titleEditText)).perform(typeText("test title"))
         closeKeyboard()
