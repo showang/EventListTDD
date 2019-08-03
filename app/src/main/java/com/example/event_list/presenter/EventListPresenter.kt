@@ -12,11 +12,9 @@ import kotlin.coroutines.CoroutineContext
 
 class EventListPresenter(
     private val repository: EventRepository,
-    private val dbDispatcher: CoroutineContext = IO,
+    private val dbScope: CoroutineScope = CoroutineScope(IO),
     private val uiDispatcher: CoroutineContext = Main
 ) : EventPresenter {
-
-    private val dbScope = CoroutineScope(dbDispatcher)
 
     init {
         dbScope.launch {
@@ -57,14 +55,11 @@ class EventListPresenter(
 
     override fun swapItem(from: Int, to: Int) {
         val fromEvent = cachedEventList[from].apply {
-            println("swap to index $to before $index")
             index = when {
                 to >= cachedEventList.size - 1 -> cachedEventList.last().index + 1.0
                 to > 0 -> {
                     val toItem = cachedEventList[to]
                     val nextItem = cachedEventList[if (to > from) (to + 1) else (to - 1)]
-                    println("toItem index: ${toItem.index}")
-                    println("nextItem index: ${nextItem.index}")
                     (toItem.index + nextItem.index) / 2
                 }
                 else -> if (cachedEventList.isEmpty()) {
@@ -73,14 +68,20 @@ class EventListPresenter(
                     cachedEventList.first().index / 2
                 }
             }
-
-            println("swap index before $index")
         }
         Collections.swap(cachedEventList, from, to)
         dbScope.launch {
             repository.insert(fromEvent)
         }
         eventListView?.onEventItemSwapped(from, to)
+    }
+
+    override fun delete(index: Int) {
+        val item = cachedEventList.removeAt(index)
+        dbScope.launch {
+            repository.deleteItem(item.id)
+        }
+        eventListView?.onEventDelete(index, item)
     }
 
     override fun clearEvents() {
@@ -102,6 +103,8 @@ interface EventListView {
 
     fun onEventItemUpdate(atIndex: Int)
 
+    fun onEventDelete(atIndex: Int, item: EventItem)
+
 }
 
 interface EventPresenter {
@@ -117,6 +120,8 @@ interface EventPresenter {
     fun update(event: EventItem)
 
     fun swapItem(from: Int, to: Int)
+
+    fun delete(index: Int)
 
     fun clearEvents()
 }

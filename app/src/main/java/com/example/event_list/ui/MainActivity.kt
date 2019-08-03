@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -66,8 +67,11 @@ class MainActivity : AppCompatActivity(), EventListView {
                     ?.show(supportFragmentManager, "$index")
             }
         }.assign(::mAdapter)
-    }?.also(ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0) {
-        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {}
+    }?.also(ItemTouchHelper(object :
+        ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP or ItemTouchHelper.DOWN, ItemTouchHelper.LEFT) {
+        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+            presenter.delete(viewHolder.adapterPosition)
+        }
 
         override fun onMove(
             recyclerView: RecyclerView,
@@ -109,6 +113,11 @@ class MainActivity : AppCompatActivity(), EventListView {
 
     override fun onEventItemUpdate(atIndex: Int) {
         mAdapter?.notifyItemChanged(atIndex)
+    }
+
+    override fun onEventDelete(atIndex: Int, item: EventItem) {
+        mAdapter?.notifyItemRemoved(atIndex)
+        Toast.makeText(this, "Item \"${item.title}\" removed.", Toast.LENGTH_LONG).show()
     }
 
 }

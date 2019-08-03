@@ -17,6 +17,9 @@ class EventRepository(private val eventDao: EventDao) {
     @WorkerThread
     suspend fun clearEvents() = eventDao.deleteAll()
 
+    @WorkerThread
+    suspend fun deleteItem(id: String) = eventDao.delete(id)
+
 //    @WorkerThread
 //    suspend fun getEventById(id: String): EventItem? = eventDao.getEventById(id)
 //

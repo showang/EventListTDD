@@ -12,7 +12,7 @@ interface EventDao {
 //    @Query("SELECT * from event_table ORDER BY `index`")
 //    fun getAllEventLiveData(): LiveData<List<EventItem>>
 
-    @Query("SELECT * from event_table ORDER BY `index`")
+    @Query("SELECT * FROM event_table ORDER BY `index`")
     suspend fun getAllEvents(): List<EventItem>
 
 //    @Query("SELECT * from event_table WHERE id = :id")
@@ -23,5 +23,8 @@ interface EventDao {
 
     @Query("DELETE FROM event_table")
     suspend fun deleteAll()
+
+    @Query("DELETE FROM event_table WHERE id = :eventId")
+    suspend fun delete(eventId: String)
 
 }
