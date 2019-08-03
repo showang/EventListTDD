@@ -1,4 +1,5 @@
 package com.example.event_list.model
 
-class EventCategory {
-}
+
+
+class Category(val name: String)
