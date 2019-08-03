@@ -15,6 +15,9 @@
     <EditText
             android:id="@+id/categoryEditText"
             android:layout_width="0dp" android:layout_height="wrap_content"
+            android:nextFocusDown="@id/titleEditText"
+            android:imeOptions="actionNext"
+            android:inputType="text"
             app:layout_constraintTop_toBottomOf="@id/categoryTitleText"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
@@ -31,8 +34,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:maxLines="1"
+            android:imeOptions="actionNext"
+            android:inputType="text"
             android:hint="Max 50 chars"
-            android:nextFocusForward="@id/descEditText"
+            android:nextFocusDown="@id/descEditText"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/titleText"/>
@@ -48,9 +53,10 @@
     <EditText
             android:id="@+id/descEditText"
             android:layout_width="0dp" android:layout_height="wrap_content"
-            android:lines="2"
-            android:maxLines="2"
+            android:maxLines="1"
+            android:inputType="textLongMessage"
             android:hint="Max 200 chars"
+            android:imeOptions="actionDone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/descText"/>

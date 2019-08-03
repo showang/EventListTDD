@@ -12,9 +12,11 @@ import kotlin.coroutines.CoroutineContext
 
 class EventListPresenter(
     private val repository: EventRepository,
-    private val dbScope: CoroutineScope = CoroutineScope(IO),
+    private val dbDispatcher: CoroutineContext = IO,
     private val uiDispatcher: CoroutineContext = Main
 ) : EventPresenter {
+
+    private val dbScope = CoroutineScope(dbDispatcher)
 
     init {
         dbScope.launch {
@@ -54,22 +56,39 @@ class EventListPresenter(
     }
 
     override fun swapItem(from: Int, to: Int) {
-        val fromEvent = cachedEventList[from]
+        val fromEvent = cachedEventList[from].apply {
+            println("swap to index $to before $index")
+            index = when {
+                to >= cachedEventList.size - 1 -> cachedEventList.last().index + 1.0
+                to > 0 -> {
+                    val toItem = cachedEventList[to]
+                    val nextItem = cachedEventList[if (to > from) (to + 1) else (to - 1)]
+                    println("toItem index: ${toItem.index}")
+                    println("nextItem index: ${nextItem.index}")
+                    (toItem.index + nextItem.index) / 2
+                }
+                else -> if (cachedEventList.isEmpty()) {
+                    1.0
+                } else {
+                    cachedEventList.first().index / 2
+                }
+            }
+
+            println("swap index before $index")
+        }
         Collections.swap(cachedEventList, from, to)
         dbScope.launch {
-            repository.insert(fromEvent.apply {
-                index = when {
-                    to >= cachedEventList.size - 1 -> cachedEventList.last().index + 1.0
-                    to > 0 -> (cachedEventList[to].index + cachedEventList[if (to > index) to + 1 else to - 1].index) / 2
-                    else -> if (cachedEventList.isEmpty()) {
-                        1.0
-                    } else {
-                        cachedEventList.first().index / 2
-                    }
-                }
-            })
+            repository.insert(fromEvent)
         }
         eventListView?.onEventItemSwapped(from, to)
+    }
+
+    override fun clearEvents() {
+        cachedEventList.clear()
+        dbScope.launch {
+            repository.clearEvents()
+        }
+        eventListView?.onEventsUpdate()
     }
 }
 
@@ -98,4 +117,6 @@ interface EventPresenter {
     fun update(event: EventItem)
 
     fun swapItem(from: Int, to: Int)
+
+    fun clearEvents()
 }

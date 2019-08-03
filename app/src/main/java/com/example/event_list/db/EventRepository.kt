@@ -6,13 +6,16 @@ import com.example.event_list.model.EventItem
 
 class EventRepository(private val eventDao: EventDao) {
 
-    val allEventLiveData: LiveData<List<EventItem>> = eventDao.getAllEventLiveData()
+//    val allEventLiveData: LiveData<List<EventItem>> = eventDao.getAllEventLiveData()
 
     @WorkerThread
     suspend fun getAllEvents(): List<EventItem> = eventDao.getAllEvents()
 
     @WorkerThread
     suspend fun insert(event: EventItem) = eventDao.insert(event)
+
+    @WorkerThread
+    suspend fun clearEvents() = eventDao.deleteAll()
 
 //    @WorkerThread
 //    suspend fun getEventById(id: String): EventItem? = eventDao.getEventById(id)

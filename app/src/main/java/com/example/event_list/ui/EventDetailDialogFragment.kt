@@ -13,7 +13,7 @@ import androidx.annotation.StringRes
 import com.example.event_list.R
 import com.example.event_list.model.Category
 import com.example.event_list.model.EventItem
-import com.example.event_list.presenter.EventListPresenter
+import com.example.event_list.presenter.EventPresenter
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import github.showang.kat.extra
@@ -45,7 +45,7 @@ class EventDetailDialogFragment : BottomSheetDialogFragment() {
     private var currentStartDate: Long = System.currentTimeMillis()
     private var currentEndDate: Long = System.currentTimeMillis()
 
-    private val presenter: EventListPresenter by inject()
+    private val presenter: EventPresenter by inject()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return context?.let { BottomSheetDialog(it) } ?: super.onCreateDialog(savedInstanceState)

@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.event_list.R
 import com.example.event_list.model.EventItem
-import com.example.event_list.presenter.EventListPresenter
 import com.example.event_list.presenter.EventListView
+import com.example.event_list.presenter.EventPresenter
 import github.showang.kat.assign
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity(), EventListView {
     }
 
     private var mAdapter: RecyctAdapter? = null
-    private val presenter: EventListPresenter by inject()
+    private val presenter: EventPresenter by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,7 +86,10 @@ class MainActivity : AppCompatActivity(), EventListView {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_settings -> true
+            R.id.action_clear -> {
+                presenter.clearEvents()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
