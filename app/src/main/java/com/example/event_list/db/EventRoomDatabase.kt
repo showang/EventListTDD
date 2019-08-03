@@ -4,9 +4,10 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.event_list.model.Category
 import com.example.event_list.model.EventItem
 
-@Database(entities = [EventItem::class], version = 1)
+@Database(entities = [EventItem::class, Category::class], version = 1)
 abstract class EventRoomDatabase : RoomDatabase() {
 
     abstract fun eventDao(): EventDao

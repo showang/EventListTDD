@@ -1,6 +1,7 @@
 package com.example.event_list.presenter
 
 import com.example.event_list.db.EventRepository
+import com.example.event_list.model.Category
 import com.example.event_list.model.EventItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
@@ -16,9 +17,23 @@ class EventListPresenter(
     private val uiDispatcher: CoroutineContext = Main
 ) : EventPresenter {
 
+    companion object {
+        private val defaultCategories = arrayOf("Person", "Business", "Others")
+    }
+
+
     init {
         dbScope.launch {
             cachedEventList.addAll(repository.getAllEvents())
+            cachedCategory.addAll(repository.getCategories())
+            if (cachedCategory.isEmpty()) {
+                defaultCategories.forEach {
+                    Category(it).run {
+                        cachedCategory.add(this)
+                        repository.addCategory(this)
+                    }
+                }
+            }
             mInitializing = false
             withContext(uiDispatcher) {
                 eventListView?.onEventsUpdate()
@@ -26,14 +41,33 @@ class EventListPresenter(
         }
     }
 
+
     override var eventListView: EventListView? = null
 
     override val initializing get() = mInitializing
     override val eventList: List<EventItem> get() = cachedEventList
+    override val categories: List<Category> get() = cachedCategory
 
+    private var cachedCategory: MutableList<Category> = mutableListOf()
     private var cachedEventList: MutableList<EventItem> = mutableListOf()
     private var mInitializing = true
 
+//    suspend fun init() {
+//        cachedEventList.addAll(repository.getAllEvents())
+//        cachedCategory.addAll(repository.getCategories())
+//        if (cachedCategory.isEmpty()) {
+//            defaultCategories.forEach {
+//                Category(it).run {
+//                    cachedCategory.add(this)
+//                    repository.addCategory(this)
+//                }
+//            }
+//        }
+//        mInitializing = false
+//        withContext(uiDispatcher) {
+//            eventListView?.onEventsUpdate()
+//        }
+//    }
 
     override fun append(event: EventItem) {
         event.apply {
@@ -76,6 +110,13 @@ class EventListPresenter(
         eventListView?.onEventItemSwapped(from, to)
     }
 
+    override fun addCategory(category: Category) {
+        cachedCategory.add(category)
+        dbScope.launch {
+            repository.addCategory(category)
+        }
+    }
+
     override fun delete(index: Int) {
         val item = cachedEventList.removeAt(index)
         dbScope.launch {
@@ -114,6 +155,10 @@ interface EventPresenter {
     var eventListView: EventListView?
 
     val eventList: List<EventItem>
+
+    val categories: List<Category>
+
+    fun addCategory(category: Category)
 
     fun append(event: EventItem)
 

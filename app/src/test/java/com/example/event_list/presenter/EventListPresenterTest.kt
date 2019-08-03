@@ -24,12 +24,14 @@ class EventListPresenterTest {
     fun setup() {
         repository = mock(EventRepository::class.java)
         mockView = mock(EventListView::class.java)
+
     }
 
     @Test
     fun testCreate() {
         runBlocking {
             `when`(repository.getAllEvents()).thenReturn(mutableListOf())
+            `when`(repository.getCategories()).thenReturn(mutableListOf())
             presenter = EventListPresenter(repository, this, Dispatchers.Default).apply {
                 eventListView = mockView
             }
@@ -45,6 +47,7 @@ class EventListPresenterTest {
     fun testCreate_notEmpty() {
         runBlocking {
             `when`(repository.getAllEvents()).thenReturn(mutableListOf(mockEvent))
+            `when`(repository.getCategories()).thenReturn(mutableListOf())
             presenter = EventListPresenter(repository, this, Dispatchers.Default).apply {
                 eventListView = mockView
             }
@@ -62,6 +65,7 @@ class EventListPresenterTest {
     fun testUpdate() {
         runBlocking {
             `when`(repository.getAllEvents()).thenReturn(mutableListOf())
+            `when`(repository.getCategories()).thenReturn(mutableListOf())
             presenter = EventListPresenter(repository, this, Dispatchers.Default).apply {
                 eventListView = mockView
             }
@@ -84,6 +88,7 @@ class EventListPresenterTest {
     fun testSwap_frontToBack() {
         runBlocking {
             `when`(repository.getAllEvents()).thenReturn(mutableListOf())
+            `when`(repository.getCategories()).thenReturn(mutableListOf())
             presenter = EventListPresenter(repository, this, Dispatchers.Default).apply {
                 eventListView = mockView
             }
@@ -107,6 +112,7 @@ class EventListPresenterTest {
     fun testSwap_backToFront() {
         runBlocking {
             `when`(repository.getAllEvents()).thenReturn(mutableListOf())
+            `when`(repository.getCategories()).thenReturn(mutableListOf())
             presenter = EventListPresenter(repository, this, Dispatchers.Default).apply {
                 eventListView = mockView
             }
@@ -130,6 +136,7 @@ class EventListPresenterTest {
     fun testSwap_middle() {
         runBlocking {
             `when`(repository.getAllEvents()).thenReturn(mutableListOf())
+            `when`(repository.getCategories()).thenReturn(mutableListOf())
             presenter = EventListPresenter(repository, this, Dispatchers.Default).apply {
                 eventListView = mockView
             }
@@ -155,6 +162,7 @@ class EventListPresenterTest {
     fun testClearEvents() {
         runBlocking {
             `when`(repository.getAllEvents()).thenReturn(mutableListOf())
+            `when`(repository.getCategories()).thenReturn(mutableListOf())
             presenter = EventListPresenter(repository, this, Dispatchers.Default).apply {
                 eventListView = mockView
             }
@@ -168,6 +176,23 @@ class EventListPresenterTest {
 
             verify(mockView, times(2)).onEventsUpdate()
             assert(presenter.eventList.isEmpty())
+        }
+    }
+
+    @Test
+    fun testAddCategory() {
+        runBlocking {
+            `when`(repository.getAllEvents()).thenReturn(mutableListOf())
+            `when`(repository.getCategories()).thenReturn(mutableListOf())
+            presenter = EventListPresenter(repository, this, Dispatchers.Default).apply {
+                eventListView = mockView
+            }
+
+            delay(100)
+            presenter.addCategory(Category("test category"))
+
+            assert(presenter.categories.size == 4)
+            assert(presenter.categories.last().name == "test category")
         }
     }
 }

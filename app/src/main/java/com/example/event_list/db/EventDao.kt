@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.example.event_list.model.Category
 import com.example.event_list.model.EventItem
 
 @Dao
@@ -27,4 +28,9 @@ interface EventDao {
     @Query("DELETE FROM event_table WHERE id = :eventId")
     suspend fun delete(eventId: String)
 
+    @Query("SELECT * FROM category_table")
+    suspend fun categories(): List<Category>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun addCategory(category: Category)
 }

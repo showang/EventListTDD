@@ -12,7 +12,7 @@ class EventItem(
     @ColumnInfo(name = "desc") var desc: String,
     @ColumnInfo(name = "start_date") var startDate: Date,
     @ColumnInfo(name = "end_date") var endDate: Date,
-    @Embedded var category: Category? = null,
+    @Embedded var category: Category,
     var index: Double = 0.0
 )
 

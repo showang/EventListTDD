@@ -13,4 +13,8 @@
 
     <string name="error_text_overflow">Max %1s length is %2d characters.</string>
     <string name="error_text_empty">Field %s can\'t be empty.</string>
+    <string name="error_toast_end_date_must_after_start">End date can\'t be early than start date</string>
+
+    <string name="dialog_create_category_title">New Category Name:</string>
+    <string name="dialog_create_category_button">Create New Category</string>
 </resources>
